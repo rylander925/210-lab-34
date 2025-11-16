@@ -1,6 +1,6 @@
 /*
 COMSC-210 | Lab 34 | Rylan Der
-IDE Used: Visual Studio Code 
+IDE Used: Visual Studio Code
 */
 
 #include <vector>
