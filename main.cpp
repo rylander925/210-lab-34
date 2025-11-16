@@ -110,23 +110,31 @@ class Graph {
 };
 
 int main() {
-    // list of edges based on the drawing 
     vector<Edge> edges = {
-        {0, 1, 12},
-        {0, 2, 8},
-        {0, 3, 21},
-        {2, 3, 6},
-        {2, 6, 2},
-        {2, 5, 5},
-        {2, 4, 4},
-        {6, 5, 6},
-        {5, 4, 9}
+        // Original node connections modified
+        {0, 2, 15},
+        {0, 3, 7},
+        {2, 3, 10},
+        {2, 4, 3},
+        {3, 5, 12},
+        {4, 5, 8},
+
+        // New edges involving new nodes
+        {7, 0, 6},
+        {7, 8, 9},
+        {8, 2, 11},
+        {8, 9, 4},
+        {9, 10, 5},
+        {10, 4, 14},
+        {11, 3, 13},
+        {11, 12, 2},
+        {12, 5, 16}
     };
 
-    // number of vertices (0 through 6)
-    int size = 7;
+    // total vertices: old (0,2,3,4,5) + new (7–12)
+    // highest index is 12 → size must be 13
+    int size = 13;
 
-    // construct the graph
     Graph g(edges, size);
 
     // print it
