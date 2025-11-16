@@ -4,6 +4,8 @@ IDE Used: Visual Studio Code
 */
 
 #include <vector>
+#include <queue>
+#include <stack>
 #include <iostream>
 
 using namespace std;
@@ -35,11 +37,75 @@ class Graph {
     void printGraph() {
         cout << "Graph's adjacency list:" << endl;
         for (int i = 0; i < adjList.size(); i++) {
-            cout << i << " --. " << endl;
+            cout << i << " --> ";
             for (Pair v: adjList[i])
                 cout << "(" << i << ", " << v.first << ", " << v.second << ") ";
             cout << endl;
         }
+    }
+
+    // ------------------------------------------------------------
+    // BFS : Breadth-First Search
+    // ------------------------------------------------------------
+    void BFS(int start) {
+        vector<bool> visited(adjList.size(), false);
+        queue<int> q;
+
+        visited[start] = true;
+        q.push(start);
+
+        cout << "BFS starting from vertex " << start << ": ";
+
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop();
+
+            cout << v << " ";  // visit
+
+            // explore neighbors
+            for (auto &p : adjList[v]) {
+                int neighbor = p.first;
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.push(neighbor);
+                }
+            }
+        }
+
+        cout << endl;
+    }
+
+    // ------------------------------------------------------------
+    // DFS : Depth-First Search (explicit stack, NOT recursion)
+    // ------------------------------------------------------------
+    void DFS(int start) {
+        vector<bool> visited(adjList.size(), false);
+        stack<int> s;
+
+        s.push(start);
+
+        cout << "DFS starting from vertex " << start << ": ";
+
+        while (!s.empty()) {
+            int v = s.top();
+            s.pop();
+
+            if (!visited[v]) {
+                visited[v] = true;
+                cout << v << " ";  // visit
+
+                // push neighbors onto stack
+                // (We must push in reverse order if we want ascending order traversal)
+                for (int i = adjList[v].size() - 1; i >= 0; i--) {
+                    int neighbor = adjList[v][i].first;
+                    if (!visited[neighbor]) {
+                        s.push(neighbor);
+                    }
+                }
+            }
+        }
+
+        cout << endl;
     }
 };
 
@@ -65,6 +131,10 @@ int main() {
 
     // print it
     g.printGraph();
+
+    //DFS
+    g.DFS(0);
+    g.BFS(0);
 
     return 0;
 }
