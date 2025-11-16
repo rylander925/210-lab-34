@@ -3,6 +3,11 @@ COMSC-210 | Lab 34 | Rylan Der
 IDE Used: Visual Studio Code
 */
 
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
 struct Edge {
     int src, dest, weight;
 };
@@ -14,9 +19,9 @@ class Graph {
     // a vector of vectors of Pairs to represent an adjacency list
     vector<vector<Pair>> adjList;
     // constructor
-    Graph(vector<Edge> const &edges) {
+    Graph(vector<Edge> const &edges, int size) {
         // resize the vector to hold SIZE elements of type vector<Edge>
-        adjList.resize(SIZE);
+        adjList.resize(size);
         // add edges to the directed graph
         for (auto &edge: edges) {
             int src = edge.src;
@@ -26,6 +31,7 @@ class Graph {
             adjList[dest].push_back(make_pair(src, weight));
         }
     }
+
     void printGraph() {
         for (int i = 0; i < adjList.size(); i++) {
             for (Pair v: adjList[i])
@@ -34,3 +40,29 @@ class Graph {
         }
     }
 };
+
+int main() {
+    // list of edges based on the drawing
+    vector<Edge> edges = {
+        {0, 1, 12},
+        {0, 2, 8},
+        {0, 3, 21},
+        {2, 3, 6},
+        {2, 6, 2},
+        {2, 5, 5},
+        {2, 4, 4},
+        {6, 5, 6},
+        {5, 4, 9}
+    };
+
+    // number of vertices (0 through 6)
+    int size = 7;
+
+    // construct the graph
+    Graph g(edges, size);
+
+    // print it
+    g.printGraph();
+
+    return 0;
+}
