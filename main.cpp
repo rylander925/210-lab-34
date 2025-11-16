@@ -110,7 +110,7 @@ class Graph {
 };
 
 int main() {
-    // list of edges based on the drawing
+    // list of edges based on the drawing 
     vector<Edge> edges = {
         {0, 1, 12},
         {0, 2, 8},
