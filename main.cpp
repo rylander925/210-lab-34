@@ -24,7 +24,7 @@ class Graph {
     Graph(vector<Edge> const &edges, int size) {
         // resize the vector to hold SIZE elements of type vector<Edge>
         adjList.resize(size);
-        // add edges to the directed graph
+        // add edges to the directed graph 
         for (auto &edge: edges) {
             int src = edge.src;
             int dest = edge.dest;
