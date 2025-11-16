@@ -33,7 +33,9 @@ class Graph {
     }
 
     void printGraph() {
+        cout << "Graph's adjacency list:" << endl;
         for (int i = 0; i < adjList.size(); i++) {
+            cout << i << " --. " << endl;
             for (Pair v: adjList[i])
                 cout << "(" << i << ", " << v.first << ", " << v.second << ") ";
             cout << endl;
