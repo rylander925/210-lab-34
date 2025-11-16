@@ -96,8 +96,8 @@ class Graph {
 
                 // push neighbors onto stack
                 // (We must push in reverse order if we want ascending order traversal)
-                for (int i = adjList[v].size() - 1; i >= 0; i--) {
-                    int neighbor = adjList[v][i].first;
+                for (auto &p : adjList[v]) {
+                    int neighbor = p.first;
                     if (!visited[neighbor]) {
                         s.push(neighbor);
                     }
