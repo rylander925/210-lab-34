@@ -210,7 +210,7 @@ public:
         return {dist, parent};
     }
 
-        /**
+    /**
      * Holds the results of a minimum spanning tree:
      * - parent[i] = vertex that connects i into the tree
      * - weight[i] = weight of the MST edge connecting i to parent[i]
@@ -469,7 +469,7 @@ public:
         }
     }
 
-        /**
+    /**
      * Prints the Minimum Spanning Tree of the town's road network.
      * Shows raw MST edges and a narrative version using building names.
      */
@@ -501,7 +501,115 @@ public:
 
         cout << endl;
     }
+
+    /**
+     * Checks if a building exists in the town.
+     *
+     * @param name building name
+     * @return true if present, false otherwise
+     */
+    bool hasBuilding(const string &name) const {
+        return nameToIdx.find(name) != nameToIdx.end();
+    }
 };
+
+/**
+ * Reads an integer from the user with validation.
+ * Keeps prompting until user enters a valid integer.
+ *
+ * @return validated integer
+ */
+int readInt() {
+    int choice;
+    while (true) {
+        cout << "Enter your choice: ";
+        if (cin >> choice) {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return choice;
+        } else {
+            cout << "Invalid input. Please enter a number.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+}
+
+/**
+ * Prompts the user for a building name and validates that it exists
+ * in the gameplay town.
+ *
+ * @param t Town object reference
+ * @return a valid building name string
+ */
+string readValidBuildingName(const Town &t) {
+    string name;
+
+    while (true) {
+        cout << "Enter building name: ";
+        getline(cin, name);
+
+        if (t.hasBuilding(name)) {
+            return name;
+        }
+
+        cout << "Building \"" << name << "\" not found. Try again.\n";
+    }
+}
+
+/**
+ * Displays and handles the Water Distribution Network menu.
+ *
+ * @param t reference to the Town object representing the network
+ */
+void runMenu(Town &t) {
+    while (true) {
+        cout << "\nWater Distribution Network Menu:\n";
+        cout << "[1] Display water distribution network\n";
+        cout << "[2] Check contaminant spread (BFS)\n";
+        cout << "[3] Plan inspection route (DFS)\n";
+        cout << "[4] Calculate shortest paths\n";
+        cout << "[5] Find Minimum Spanning Tree\n";
+        cout << "[0] Exit\n";
+
+        int choice = readInt();
+
+        switch (choice) {
+            case 1:
+                t.printTownMap();
+                break;
+
+            case 2: {
+                string from = readValidBuildingName(t);
+                t.investigateCrimeScene(from);
+                break;
+            }
+
+            case 3: {
+                string from = readValidBuildingName(t);
+                t.traceEscapeRoute(from);
+                break;
+            }
+
+            case 4: {
+                string from = readValidBuildingName(t);
+                t.printShortestPaths(from);
+                break;
+            }
+
+            case 5:
+                t.printMinimumSpanningTree();
+                break;
+
+            case 0:
+                cout << "Exiting...\n";
+                return;
+
+            default:
+                cout << "Invalid selection.\n";
+                break;
+        }
+    }
+}
 
 /**
  * Entry point: creates the town, prints its map,
@@ -524,10 +632,6 @@ int main() {
 
     Town myTown(buildingNames, edges);
 
-    myTown.printTownMap();
-    myTown.investigateCrimeScene("City Hall");
-    myTown.traceEscapeRoute("City Hall");
-    myTown.printShortestPaths("City Hall");
-    myTown.printMinimumSpanningTree();
+    runMenu(myTown);
     return 0;
 }
