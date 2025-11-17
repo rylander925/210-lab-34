@@ -209,6 +209,59 @@ public:
 
         return {dist, parent};
     }
+
+        /**
+     * Holds the results of a minimum spanning tree:
+     * - parent[i] = vertex that connects i into the tree
+     * - weight[i] = weight of the MST edge connecting i to parent[i]
+     */
+    struct MSTResult {
+        vector<int> parent;
+        vector<int> weight;
+    };
+
+    /**
+     * Computes a Minimum Spanning Tree (MST) using Prim's algorithm.
+     * Starts from vertex 0 by default.
+     *
+     * @return MSTResult containing parent[] and weight[] arrays
+     *         describing the MST edges.
+     */
+    MSTResult mstPrim() {
+        int n = adjList.size();
+
+        vector<int> key(n, INT_MAX);       // smallest weight edge to tree
+        vector<int> parent(n, -1);         // parent of each vertex in MST
+        vector<bool> inMST(n, false);      // which vertices are already chosen
+
+        // Min-heap: (key, vertex)
+        priority_queue<Pair, vector<Pair>, greater<Pair>> pq;
+
+        key[0] = 0;
+        pq.push({0, 0});
+
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
+
+            if (inMST[u]) continue;
+            inMST[u] = true;
+
+            // check all neighbors
+            for (auto &p : adjList[u]) {
+                int v = p.first;
+                int w = p.second;
+
+                if (!inMST[v] && w < key[v]) {
+                    key[v] = w;
+                    parent[v] = u;
+                    pq.push({key[v], v});
+                }
+            }
+        }
+
+        return {parent, key};
+    }
 };
 
 /**
@@ -415,6 +468,39 @@ public:
             cout << endl;
         }
     }
+
+        /**
+     * Prints the Minimum Spanning Tree of the town's road network.
+     * Shows raw MST edges and a narrative version using building names.
+     */
+    void printMinimumSpanningTree() {
+        auto mst = graph.mstPrim();
+
+        cout << "Minimum Spanning Tree edges:" << endl;
+        cout << "====================================" << endl;
+
+        for (int i = 1; i < (int)mst.parent.size(); ++i) {
+            cout << "Edge from " << mst.parent[i]
+                 << " to " << i
+                 << " with length: " << mst.weight[i]
+                 << " units" << endl;
+        }
+
+        cout << endl;
+        cout << "Minimum Spanning Tree (Building Connections):" << endl;
+        cout << "============================================" << endl;
+
+        for (int i = 1; i < (int)mst.parent.size(); ++i) {
+            int u = mst.parent[i];
+            int v = i;
+
+            cout << idxToName[u] << "  →  " << idxToName[v]
+                 << " (Road length: " << mst.weight[i] << " units)"
+                 << endl;
+        }
+
+        cout << endl;
+    }
 };
 
 /**
@@ -442,5 +528,6 @@ int main() {
     myTown.investigateCrimeScene("City Hall");
     myTown.traceEscapeRoute("City Hall");
     myTown.printShortestPaths("City Hall");
+    myTown.printMinimumSpanningTree();
     return 0;
 }
