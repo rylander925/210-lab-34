@@ -1,6 +1,7 @@
 /*
 COMSC-210 | Lab 34 | Rylan Der
 IDE Used: Visual Studio Code
+Code generated with ChatGPT
 */
 
 #include <vector>
