@@ -7,6 +7,7 @@ IDE Used: Visual Studio Code
 #include <queue>
 #include <stack>
 #include <iostream>
+#include <algorithm>
 #include <string>
 #include <map>
 #include <tuple>
@@ -159,6 +160,55 @@ public:
         }
         return res;
     }
+
+    /**
+     * Holds results of Dijkstra's algorithm:
+     * - dist[i] = shortest distance from start to i
+     * - parent[i] = previous vertex on the shortest path
+     */
+    struct ShortestPathResult {
+        vector<int> dist;
+        vector<int> parent;
+    };
+
+    /**
+     * Computes the shortest paths from a starting vertex to all others
+     * using Dijkstra's algorithm and also stores parents for path
+     * reconstruction.
+     *
+     * @param start  Index of the starting vertex.
+     * @return ShortestPathResult containing distance and parent arrays.
+     */
+    ShortestPathResult shortestPaths(int start) {
+        int n = adjList.size();
+        vector<int> dist(n, INT_MAX);
+        vector<int> parent(n, -1);
+
+        dist[start] = 0;
+
+        priority_queue<Pair, vector<Pair>, greater<Pair>> pq;
+        pq.push({0, start});
+
+        while (!pq.empty()) {
+            auto [d, v] = pq.top();
+            pq.pop();
+
+            if (d > dist[v]) continue;
+
+            for (auto &edge : adjList[v]) {
+                int neighbor = edge.first;
+                int weight = edge.second;
+
+                if (dist[v] + weight < dist[neighbor]) {
+                    dist[neighbor] = dist[v] + weight;
+                    parent[neighbor] = v;
+                    pq.push({dist[neighbor], neighbor});
+                }
+            }
+        }
+
+        return {dist, parent};
+    }
 };
 
 /**
@@ -294,6 +344,77 @@ public:
         cout << "DFS complete: total buildings inspected in route trace = "
              << res.order.size() << endl << endl;
     }
+
+    /**
+     * Reconstructs the shortest path from a start vertex to an end vertex
+     * using a parent array produced by Dijkstra's algorithm.
+     *
+     * @param parent  Parent vector returned by shortestPaths().
+     * @param end     Destination vertex.
+     * @return Vector of vertex indices describing the full path.
+     */
+    vector<int> reconstructPath(const vector<int>& parent, int end) {
+        vector<int> path;
+        for (int v = end; v != -1; v = parent[v]) {
+            path.push_back(v);
+        }
+        reverse(path.begin(), path.end());
+        return path;
+    }
+
+    /**
+     * Computes and prints the shortest path distances from a given building
+     * to all others, including a simple numeric list and a narrative-style
+     * output referencing building names.
+     *
+     * @param startBuilding  Name of the building to begin the computation from.
+     */
+    void printShortestPaths(const string& startBuilding) {
+        auto it = nameToIdx.find(startBuilding);
+        if (it == nameToIdx.end()) {
+            cout << "Unknown start building: " << startBuilding << endl;
+            return;
+        }
+
+        int start = it->second;
+        auto result = graph.shortestPaths(start);
+
+        cout << "Shortest path distances from " << startBuilding << ":" << endl;
+        cout << "=============================================" << endl;
+
+        for (int i = 0; i < (int)result.dist.size(); ++i) {
+            if (result.dist[i] == INT_MAX)
+                cout << start << " -> " << i << " : unreachable" << endl;
+            else
+                cout << start << " -> " << i << " : " << result.dist[i] << endl;
+        }
+
+        cout << endl << "Full Path Reconstructions:" << endl;
+        cout << "=============================================" << endl;
+
+        for (int i = 0; i < (int)result.dist.size(); ++i) {
+            cout << "From " << idxToName[start]
+                 << " to " << idxToName[i] << ":" << endl;
+
+            if (result.dist[i] == INT_MAX) {
+                cout << "  → No route exists." << endl << endl;
+                continue;
+            }
+
+            // reconstruct path
+            vector<int> path = reconstructPath(result.parent, i);
+
+            cout << "  Path: ";
+            for (int j = 0; j < (int)path.size(); ++j) {
+                cout << idxToName[path[j]];
+                if (j + 1 < (int)path.size()) cout << " → ";
+            }
+            cout << endl;
+
+            cout << "  Total distance: " << result.dist[i] << " units" << endl;
+            cout << endl;
+        }
+    }
 };
 
 /**
@@ -320,6 +441,6 @@ int main() {
     myTown.printTownMap();
     myTown.investigateCrimeScene("City Hall");
     myTown.traceEscapeRoute("City Hall");
-
+    myTown.printShortestPaths("City Hall");
     return 0;
 }
