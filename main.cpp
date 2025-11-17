@@ -2,12 +2,12 @@
 COMSC-210 | Lab 34 | Rylan Der
 IDE Used: Visual Studio Code
 */
-
 #include <vector>
 #include <queue>
 #include <stack>
 #include <iostream>
 #include <algorithm>
+#include <limits>
 #include <string>
 #include <map>
 #include <tuple>
@@ -513,6 +513,35 @@ public:
     }
 };
 
+int readInt();
+string readValidBuildingName(const Town &t);
+void runMenu(Town &t);
+
+/**
+ * Entry point: creates the town, prints its map,
+ * and runs both BFS and DFS story-based analyses.
+ */
+int main() {
+    vector<string> buildingNames = {
+        "City Hall", "Fire Station", "Central Plaza", "Library",
+        "City Bank", "General Hospital", "Utility Control Center",
+        "Shopping District", "Warehouse Depot", "Train Station",
+        "Power Substation", "Apartment Complex", "Industrial Plant"
+    };
+
+    vector<Edge> edges = {
+        {0, 2, 15},{0, 3, 7},{2, 3, 10},{2, 4, 3},{3, 5, 12},
+        {4, 5, 8},{7, 0, 6},{7, 8, 9},{8, 2, 11},{8, 9, 4},
+        {9, 10, 5},{10, 4, 14},{11, 3, 13},{11, 12, 2},{12, 5, 16},
+        {1, 3, 6},{6, 10, 4}
+    };
+
+    Town myTown(buildingNames, edges);
+
+    runMenu(myTown);
+    return 0;
+}
+
 /**
  * Reads an integer from the user with validation.
  * Keeps prompting until user enters a valid integer.
@@ -563,12 +592,12 @@ string readValidBuildingName(const Town &t) {
  */
 void runMenu(Town &t) {
     while (true) {
-        cout << "\nWater Distribution Network Menu:\n";
-        cout << "[1] Display water distribution network\n";
-        cout << "[2] Check contaminant spread (BFS)\n";
-        cout << "[3] Plan inspection route (DFS)\n";
-        cout << "[4] Calculate shortest paths\n";
-        cout << "[5] Find Minimum Spanning Tree\n";
+        cout << "\nCity Navigation System Menu:\n";
+        cout << "[1] Display city map\n";
+        cout << "[2] Investigate crime scene (BFS)\n";
+        cout << "[3] Trace criminal escape route (DFS)\n";
+        cout << "[4] Compute shortest paths from a building\n";
+        cout << "[5] Compute Minimum Spanning Tree (road optimization)\n";
         cout << "[0] Exit\n";
 
         int choice = readInt();
@@ -611,27 +640,3 @@ void runMenu(Town &t) {
     }
 }
 
-/**
- * Entry point: creates the town, prints its map,
- * and runs both BFS and DFS story-based analyses.
- */
-int main() {
-    vector<string> buildingNames = {
-        "City Hall", "Fire Station", "Central Plaza", "Library",
-        "City Bank", "General Hospital", "Utility Control Center",
-        "Shopping District", "Warehouse Depot", "Train Station",
-        "Power Substation", "Apartment Complex", "Industrial Plant"
-    };
-
-    vector<Edge> edges = {
-        {0, 2, 15},{0, 3, 7},{2, 3, 10},{2, 4, 3},{3, 5, 12},
-        {4, 5, 8},{7, 0, 6},{7, 8, 9},{8, 2, 11},{8, 9, 4},
-        {9, 10, 5},{10, 4, 14},{11, 3, 13},{11, 12, 2},{12, 5, 16},
-        {1, 3, 6},{6, 10, 4}
-    };
-
-    Town myTown(buildingNames, edges);
-
-    runMenu(myTown);
-    return 0;
-}

@@ -3,6 +3,7 @@
         "utility": "cpp",
         "queue": "cpp",
         "vector": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "xstring": "cpp"
     }
 }
